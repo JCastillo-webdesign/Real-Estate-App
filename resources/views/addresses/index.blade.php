@@ -82,7 +82,8 @@
     <a href="{{ route('addresses.create') }}">Add a New Address</a>
     <br><br><br> 
     
-    <table border="1">
+        {{-- Addresses table --}}
+        <table border="1">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -97,21 +98,30 @@
             </thead>
 
             <tbody>
+                {{-- Loop through addresses --}}
                 @forelse ($addresses as $address)
                     <tr>
+                        {{-- Display address ID --}}
                         <td>{{ $address->id }}</td>
+                        {{-- Display street address --}}
                         <td>{{ $address->street_address }}</td>
+                        {{-- Display secondary address or N/A --}}
                         <td>{{ $address->street_address_2 ?? 'N/A' }}</td>
+                        {{-- Display city --}}
                         <td>{{ $address->city }}</td>
+                        {{-- Display state --}}
                         <td>{{ $address->state }}</td>
+                        {{-- Display zipcode --}}
                         <td>{{ $address->zipcode }}</td>
 
+                        {{-- Image preview column --}}
                         <td>
 
                             @php
+                                // Decode images JSON array
                                 $raw = $address->images;
 
-                                // First decode
+                                // First decode attempt
                                 $images = json_decode($raw, true);
 
                                 // If still not an array, decode again (handles double-encoded JSON)
@@ -119,9 +129,11 @@
                                     $images = json_decode($images ?? '[]', true);
                                 }
 
+                                // Get first image for thumbnail preview
                                 $firstImage = $images[0] ?? null;
                             @endphp
 
+                            {{-- Show thumbnail with count of images --}}
                             @if($firstImage)
                                 <a href="{{ route('addresses.show', $address->id) }}">
                                     <img src="{{ asset('images/' . $firstImage) }}"
